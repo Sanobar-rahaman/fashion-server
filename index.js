@@ -58,6 +58,34 @@ app.delete('/fashion/:id',async(req,res)=>{
   const query = {_id : new  ObjectId(id)}
   const result = await fashionCollection.deleteOne(query)
   res.send(result);
+})
+// for update opration
+app.get('/fashion/:id',async(req,res)=>{
+  const id = req.params.id
+  // console.log(id);
+  const query ={_id : new ObjectId(id)}
+  const result = await fashionCollection.findOne(query)
+  res.send(result)
+})
+app.put('/fashion/:id',async(req,res)=>{
+  const id = req.params.id
+  // console.log(id);
+  const filter ={_id : new ObjectId(id)}
+  const option = {upsert:true};
+  const updatedFashion = req.body;
+  const fashion = {
+    $set:{
+      name:updatedFashion.name,
+      type:updatedFashion.type,
+      price:updatedFashion.price,
+      description:updatedFashion.description,
+      rating:updatedFashion.rating,
+      photo:updatedFashion.photo
+    }
+  }
+  const result = await fashionCollection.updateOne(filter,fashion,option)
+  res.send(result)
+
 
 })
 
