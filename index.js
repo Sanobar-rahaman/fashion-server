@@ -38,6 +38,7 @@ async function run() {
     // await client.connect();
 
     const fashionCollection = client.db('coffeeDB').collection('fashion')
+    const cartCollection = client.db('coffeeDB').collection('cart')
 
 app.post('/fashion',async(req,res)=>{
     const newFashion = req.body
@@ -50,6 +51,11 @@ app.post('/fashion',async(req,res)=>{
 })
 app.get('/fashion',async(req,res)=>{
   const cursor = fashionCollection.find()
+  const result = await cursor.toArray()
+  res.send(result);
+})
+app.get('/fashionbrand/:name',async(req,res)=>{
+  const cursor = fashionCollection.find({name:req.params.name})
   const result = await cursor.toArray()
   res.send(result);
 })
@@ -87,6 +93,24 @@ app.put('/fashion/:id',async(req,res)=>{
   res.send(result)
 
 
+})
+app.post('/cart',async(req,res)=>{
+   const newdata = req.body
+   console.log(newdata);
+   const result = await cartCollection.insertOne(newdata)
+   res.send(result)
+
+})
+ app.get('/cart',async(req,res)=>{
+  const filter = cartCollection.find()
+  const result = await  filter.toArray()
+  res.send(result)
+ })
+ app.delete('/cart/:id',async(req,res)=>{
+  const id = req.params.id
+  const query = {_id : new  ObjectId(id)}
+  const result = await cartCollection.deleteOne(query)
+  res.send(result);
 })
 
    
